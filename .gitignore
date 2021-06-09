@@ -1,0 +1,8 @@
+# executable
+a.out
+
+# Lex's output
+lex.yy.c
+
+# Yacc's output
+y.tab.c
