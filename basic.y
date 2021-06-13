@@ -60,7 +60,6 @@ factor :
 %%
 
 int main() {
-    printf("Enter an expression to evaluate it: \n");
     yyparse();
 }
 
