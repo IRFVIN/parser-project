@@ -12,7 +12,8 @@ int yywrap() {
 }
 %}
 
-%token ID INTEGER BASIC
+%token ID INTEGER REAL BASIC
+%token ABSTRACT CONTINUE FOR NEW SWITCH ASSERT DEFAULT GOTO PACKAGE SYNCHRONIZED DO IF PRIVATE THIS BREAK IMPLEMENTS PROTECTED THROW ELSE IMPORT PUBLIC THROWS CASE ENUM INSTANCEOF RETURN TRANSIENT CATCH EXTENDS TRY FINAL INTERFACE STATIC CLASS FINALLY STRICTFP VOLATILE CONST NATIVE SUPER WHILE
 
 %%
 
@@ -33,6 +34,7 @@ type :
     type '[' INTEGER ']'
     | BASIC
     ;
+
 stmts :
     stmts stmt
     | /* empty */
@@ -40,6 +42,8 @@ stmts :
 
 stmt :
     ID '=' expr ';'
+    | ID '=' NEW type ';'
+    | ID '[' INTEGER ']' '=' expr ';'
     ;
 expr :
     expr '+' term
@@ -55,6 +59,7 @@ factor :
     '(' expr ')'
     | ID
     | INTEGER
+    | REAL
     ;
     
 %%
