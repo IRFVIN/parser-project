@@ -14,21 +14,51 @@ BASIC   boolean|byte|char|short|int|long|float|double
 ID      [_a-zA-Z][A-Za-z0-9_]*
 WS      [ \n\t]+
 
+SL_COMMENT      \/\/.*$
+OM_STARS        (\*)+
+ML_COMMENT      "/*"([^*]|{OM_STARS}[^*/])*{OM_STARS}"/"
+
+SEQUENCE_TYPE ArrayList
+
 %%
-{WS}        /* ignore whitespaces */
-{REAL}      {printf("REAL number: %s\n", yytext); return REAL; }
-{INTEGER}   {printf("INTEGER number: %s\n", yytext); return INTEGER; }
-{BASIC}     {printf("BASIC type: %s\n", yytext); return BASIC;}
+{WS}            /* ignore whitespaces */
+{SL_COMMENT}    /* ignore single and multiple line comments */
+{ML_COMMENT}
+
+{REAL}      {
+        //printf("REAL number: %s\n", yytext); 
+        return REAL;
+    }
+{INTEGER}   {
+        //printf("INTEGER number: %s\n", yytext); 
+        return INTEGER;
+    }
+{BASIC}     {
+        //printf("BASIC type: %s\n", yytext);
+        yylval.stringValue = strdup(yytext);
+        //printf(yylval.stringValue);
+        return BASIC;
+    }
+{SEQUENCE_TYPE} {
+        //printf("SEQUENCE_TYPE type: %s\n", yytext);
+        yylval.stringValue = strdup(yytext); 
+        return SEQUENCE_TYPE;
+    }
 {ID}        {
-                int is_reserved = isReserved(yytext);
-                if ( is_reserved != -1 ) {
-                    printf("Reserved keyword: %s\n", yytext);
-                    return is_reserved;
-                } else {
-                    // since it's not a reserved keyword, it's an identifier
-                    printf("IDENTIFIER: %s\n", yytext); return ID;
-                }
-            }
-.           {printf("other token: %s\n", yytext); return yytext[0];}
+        int is_reserved = isReserved(yytext);
+        if ( is_reserved != -1 ) {
+            // printf("Reserved keyword: %s\n", yytext);
+            return is_reserved;
+        } else {
+            // since it's not a reserved keyword, it's an identifier
+            yylval.stringValue = strdup(yytext);
+            //printf("IDENTIFIER: %s\n", yytext); 
+            return ID;
+        }
+    }
+.           {
+        //printf("other token: %s\n", yytext);
+        return yytext[0];
+    }
 %%
 

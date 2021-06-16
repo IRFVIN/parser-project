@@ -1,0 +1,71 @@
+
+type: int
+id: a
+is_sequence: 0
+type compatibility: ok
+Number of symbols declared so far: 1
+
+type: int
+id: b
+is_sequence: 0
+type compatibility: ok
+Number of symbols declared so far: 2
+
+type: char
+id: c
+is_sequence: 0
+type compatibility: ok
+Number of symbols declared so far: 3
+
+type: boolean
+id: d
+is_sequence: 0
+type compatibility: ok
+Number of symbols declared so far: 4
+
+type: int
+id: e
+is_sequence: 0
+type compatibility: ok
+Number of symbols declared so far: 5
+
+type: double
+id: j
+is_sequence: 0
+type compatibility: ok
+Number of symbols declared so far: 6
+
+type: int
+id: arr
+is_sequence: 1
+type compatibility: ok
+Number of symbols declared so far: 7
+
+type: int
+id: x
+is_sequence: 1
+type compatibility: ok
+Number of symbols declared so far: 8
+
+type: int
+id: arr1
+is_sequence: 1
+type compatibility: ok
+Number of symbols declared so far: 9
+
+type: int
+id: elem
+is_sequence: 1
+Number of symbols declared so far: 10
+
+type: int
+id: g
+is_sequence: 1
+Number of symbols declared so far: 11
+ERROR: Incompatible types boolean and int
+
+ERROR: Incompatible types boolean and int
+ERROR: Symbol f is not declared!
+
+ERROR: Incompatible types double and int
+Error: Redeclaration of symbol x
