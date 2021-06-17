@@ -18,12 +18,10 @@ for(type var : sequence){
 
 ## Running the Project
 
-Compiling instructions to be added.
+Running Instructions
 ```bash
-lex basic.l
-yacc -d basic.y
-cc lex.yy.c y.tab.c
-./a.out < basic.java
+chmod +x run.sh
+./run.sh tests/basic.java
 ```
 
 ## To Do
