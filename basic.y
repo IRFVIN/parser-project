@@ -30,7 +30,7 @@ int yywrap() {
 %%
 
 program :
-    block   {printf("Syntactically valid program!\n"); }
+    block   {printf("Syntactically valid program!\n"); writeSymtab(yyout);}
     ;
 block :
     '{' decls stmts '}'
@@ -40,11 +40,8 @@ decls :
     | /* empty */
     ;
 decl :
-    type ID assignment ';' {
-        fprintf(yyout, "\ntype: %s\nid: %s\nis_sequence: %d\n", $1, $2, is_curr_symbol_sequence);
-        
+    type ID assignment ';' {        
         Symbol curr_symbol = {strdup($2), strdup($1), ID, is_curr_symbol_sequence};
-        displaySymbol(curr_symbol);
         
         if (getSymtabEntryIdx(curr_symbol.name) != -1) {
             fprintf(yyout, "ERROR: Redeclaration of symbol %s\n", $2);
@@ -53,12 +50,8 @@ decl :
             // and check type compatibility
             if ($3 != NULL && strcmp($1, $3) != 0) {
                 fprintf(yyout, "ERROR: Incompatible types %s and %s\n", $1, $3);
-            } else {
-                fprintf(yyout, "type compatibility: ok\n");
             }
         }
-
-        fprintf(yyout, "Number of symbols declared so far: %d\n", num_symbols);
     }
     ;
 
@@ -98,23 +91,27 @@ stmt :
         // check if ID is present in the symbol table
         int idx = getSymtabEntryIdx($1);
         if (idx == -1) {
-            fprintf(yyout, "\nERROR: Symbol %s is not declared.\n", $1);
+            fprintf(yyout, "\nERROR (assignment): Symbol %s is not declared.\n", $1);
         } else {
             // check type compatibility
             if ($2 != NULL && strcmp(symbols[idx].type, $2) != 0) {
-                fprintf(yyout, "\nERROR: Incompatible types %s and %s\n", symbols[idx].type, $2);
+                fprintf(yyout, "\nERROR (assignment): Incompatible types %s and %s\n", symbols[idx].type, $2);
             } 
         }
     }
     | ID '[' INTEGER ']' '=' expr ';' {
         // check if ID is present in the symbol table
         int idx = getSymtabEntryIdx($1);
+        printf("HERE check %s\n", $1);
         if (idx == -1) {
-            fprintf(yyout, "ERROR: Symbol %s is not declared.\n", $1);
+            fprintf(yyout, "ERROR (array assignment): Symbol %s is not declared.\n", $1);
         } else {
-            // check type compatibility
-            if (strcmp(symbols[idx].type, $6) != 0) {
-                fprintf(yyout, "ERROR: Incompatible types %s and %s\n", symbols[idx].type, $6);
+            // check that ID is a sequence
+            if (symbols[idx].is_sequence != 1) {
+                fprintf(yyout, "ERROR (array assignment): Symbol %s is not a sequence.\n", symbols[idx].name);
+            } else if (strcmp(symbols[idx].type, $6) != 0) {
+                // then check for type compatibility
+                fprintf(yyout, "ERROR (array assignment): Incompatible types %s and %s\n", symbols[idx].type, $6);
             } 
         }
     }
@@ -124,24 +121,25 @@ stmt :
 
 foreach : FOR '(' BASIC ID ':' ID ')' {
             // check if symbol $4 already exists : java doesn't allow this
+            fprintf(yyout, "foreach symbols: %s, %s, %s\n", $3, $4, $6);
             if (getSymtabEntryIdx($4) != -1) {
-                fprintf(yyout, "Error: Redeclaration of symbol %s\n", $4);
+                fprintf(yyout, "ERROR (foreach): Redeclaration of symbol %s\n", $4);
             } else {
-                Symbol symbol = {$4, $3, ID, is_curr_symbol_sequence};
+                // symbol $4 is not a sequence, so is_sequence = 0
+                Symbol symbol = {$4, $3, ID, 0};
                 insertInSymtab(symbol);
-                fprintf(yyout, "\ntype: %s\nid: %s\nis_sequence: %d\n", $3, $4, is_curr_symbol_sequence);
-                displaySymbol(symbol);
-                fprintf(yyout, "Number of symbols declared so far: %d\n", num_symbols);
                 
-                // check if sequence's id is present in the symbol table
+                // check if sequence's id ($6) is present in the symbol table
                 int idx = getSymtabEntryIdx($6);
                 if (idx == -1) {
-                    fprintf(yyout, "ERROR: Symbol %s is not declared.\n", $6);
+                    fprintf(yyout, "ERROR (foreach): Symbol %s is not declared.\n", $6);
                 } else {
-                    //fprintf(yyout, "Sequence is defined!!\n");
-                    // check type compatibility
-                    if (strcmp(symbols[idx].type, $3) != 0) {
-                        fprintf(yyout, "ERROR: Incompatible types %s and %s\n", symbols[idx].type, $3);
+                    // check that ID is a sequence
+                    if (symbols[idx].is_sequence != 1) {
+                        fprintf(yyout, "ERROR (foreach): Symbol %s is not a sequence.\n", $6);
+                    } else if (strcmp(symbols[idx].type, $3) != 0) {
+                        // check type compatibility
+                        fprintf(yyout, "ERROR (foreach): Incompatible types %s and %s\n", symbols[idx].type, $3);
                     } 
                 }
             }
@@ -162,7 +160,7 @@ factor :
     | ID {
         int idx = getSymtabEntryIdx($1);
         if (idx == -1) {
-            fprintf(yyout, "ERROR: Symbol %s is not declared!\n", $1);
+            fprintf(yyout, "ERROR (factor -> ID): Symbol %s is not declared!\n", $1);
         } else {
             $$ = symbols[idx].type;
         }

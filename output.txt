@@ -1,85 +1,11 @@
+foreach symbols: int, elem, elem
+ERROR (foreach): Symbol elem is not a sequence.
 
-type: int
-id: a
-is_sequence: 0
-type compatibility: ok
-Number of symbols declared so far: 42
+________________________________________________
+no.	name	type	token	is_sequence|
+________________________________________________
+#41	a	int	258	0
+#42	arr	int	258	1
+#43	elem	int	258	0
 
-type: int
-id: b
-is_sequence: 0
-type compatibility: ok
-Number of symbols declared so far: 43
-
-type: char
-id: c
-is_sequence: 0
-type compatibility: ok
-Number of symbols declared so far: 44
-
-type: boolean
-id: d
-is_sequence: 0
-type compatibility: ok
-Number of symbols declared so far: 45
-
-type: int
-id: e
-is_sequence: 0
-type compatibility: ok
-Number of symbols declared so far: 46
-
-type: double
-id: j
-is_sequence: 0
-type compatibility: ok
-Number of symbols declared so far: 47
-
-type: int
-id: arr
-is_sequence: 1
-type compatibility: ok
-Number of symbols declared so far: 48
-
-type: int
-id: x
-is_sequence: 1
-type compatibility: ok
-Number of symbols declared so far: 49
-
-type: int
-id: hello
-is_sequence: 1
-type compatibility: ok
-Number of symbols declared so far: 50
-
-type: int
-id: arr1
-is_sequence: 1
-type compatibility: ok
-Number of symbols declared so far: 51
-
-type: int
-id: elem
-is_sequence: 1
-Number of symbols declared so far: 52
-
-type: int
-id: g
-is_sequence: 1
-Number of symbols declared so far: 53
-ERROR: Symbol f is not declared!
-
-ERROR: Symbol f is not declared.
-
-ERROR: Symbol f is not declared.
-
-type: int
-id: int
-is_sequence: 1
-Number of symbols declared so far: 54
-
-type: int
-id: element
-is_sequence: 1
-Number of symbols declared so far: 55
+________________________________________________

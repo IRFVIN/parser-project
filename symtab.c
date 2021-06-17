@@ -54,22 +54,20 @@ Symbol symbols[CAPACITY] = {
     {"while", NULL, WHILE, 0}
 };
 
-void displaySymbol(Symbol symbol) {
-    printf("\n-------------------------\n");
-    printf("name : %s\n", symbol.name);
-    printf("type : %s\n", symbol.type);
-    printf("token: %d\n", symbol.token);
-    printf("is_sequence: %d\n", symbol.is_sequence);
-    printf("-------------------------\n");
+void writeSymbol(Symbol symbol, FILE *yyout) {
+    fprintf(yyout, "%s\t%s\t%d\t%d\n", symbol.name, symbol.type, symbol.token, symbol.is_sequence);
 }
 
-/*
- * If str is a reserved keyword, then isReserved
- * returns the corresponding token of it.
- *
- * Otherwise, it returns -1, which indicates it's
- * not a reserved keyword.
- */
+void writeSymtab(FILE* yyout) {
+    fprintf(yyout, "\n________________________________________________\n");
+    fprintf(yyout, "no.\tname\ttype\ttoken\tis_sequence|\n");
+    fprintf(yyout, "________________________________________________\n");
+    for (int i=num_reserved_words; i<num_symbols; i++) {
+        fprintf(yyout, "#%d\t", i);
+        writeSymbol(symbols[i], yyout);
+    }
+    fprintf(yyout, "\n________________________________________________\n");
+}
 
 void insertInSymtab(const Symbol symbol) {
     symbols[num_symbols++] = symbol;

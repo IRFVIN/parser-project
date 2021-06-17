@@ -47,10 +47,10 @@ SEQUENCE_TYPE ArrayList
 {ID}        {
         int idx = getSymtabEntryIdx(yytext);
         if ( idx != -1 ) {
-            // printf("Reserved keyword: %s\n", yytext);
+            // printf("Reserved keyword or already declared ID: %s\n", yytext);
             return symbols[idx].token;
         } else {
-            // since it's not a reserved keyword, it's an identifier
+            // first occurence of identifier
             yylval.stringValue = strdup(yytext);
             //printf("IDENTIFIER: %s\n", yytext);
             return ID;

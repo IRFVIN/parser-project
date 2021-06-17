@@ -8,6 +8,7 @@
     int e;
     double j;
     
+    
     ArrayList<int> arr = new ArrayList<int>();
     int[] x = new int[10];
     int[] hello = new int[100];

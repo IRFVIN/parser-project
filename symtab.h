@@ -15,7 +15,8 @@ extern const int num_reserved_words;
 extern int num_symbols;
 extern Symbol symbols[];
 
-void displaySymbol(Symbol symbol);
+void writeSymbol(Symbol symbol, FILE *yyout);
+void writeSymtab(FILE *yyout);
 void insertInSymtab(const Symbol symbol);
 int getSymtabEntryIdx(const char *name);
 
