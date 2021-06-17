@@ -45,14 +45,14 @@ SEQUENCE_TYPE ArrayList
         return SEQUENCE_TYPE;
     }
 {ID}        {
-        int is_reserved = isReserved(yytext);
-        if ( is_reserved != -1 ) {
+        int idx = getSymtabEntryIdx(yytext);
+        if ( idx != -1 ) {
             // printf("Reserved keyword: %s\n", yytext);
-            return is_reserved;
+            return symbols[idx].token;
         } else {
             // since it's not a reserved keyword, it's an identifier
             yylval.stringValue = strdup(yytext);
-            //printf("IDENTIFIER: %s\n", yytext); 
+            //printf("IDENTIFIER: %s\n", yytext);
             return ID;
         }
     }

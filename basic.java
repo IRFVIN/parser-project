@@ -10,6 +10,7 @@
     
     ArrayList<int> arr = new ArrayList<int>();
     int[] x = new int[10];
+    int[] hello = new int[100];
     
     ArrayList<int> arr1;    
     arr1 = new ArrayList<int>();
@@ -43,4 +44,10 @@
     
     // should cause redeclaration of x
     for (int x : arr) a = a + 1;
+    
+    // should cause "a: not a sequence error"
+    for (int element : a) {
+        a = a + 1;
+    }
+    
 }

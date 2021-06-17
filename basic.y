@@ -2,7 +2,7 @@
 // ordinary C declarations
 #include <stdio.h>
 
-#include "symtab2.h"
+#include "symtab.h"
 
 int is_curr_symbol_sequence;
 Symbol curr_symbol;
@@ -13,7 +13,7 @@ void yyerror(const char *str) {
 }
 int yylex();
 int yywrap() {
-        return 1;
+    return 1;
 }
 %}
 
@@ -43,7 +43,8 @@ decl :
     type ID assignment ';' {
         fprintf(yyout, "\ntype: %s\nid: %s\nis_sequence: %d\n", $1, $2, is_curr_symbol_sequence);
         
-        Symbol curr_symbol = {strdup($2), strdup($1)};
+        Symbol curr_symbol = {strdup($2), strdup($1), ID, is_curr_symbol_sequence};
+        displaySymbol(curr_symbol);
         
         if (getSymtabEntryIdx(curr_symbol.name) != -1) {
             fprintf(yyout, "ERROR: Redeclaration of symbol %s\n", $2);
@@ -126,9 +127,10 @@ foreach : FOR '(' BASIC ID ':' ID ')' {
             if (getSymtabEntryIdx($4) != -1) {
                 fprintf(yyout, "Error: Redeclaration of symbol %s\n", $4);
             } else {
-                Symbol symbol = {$4, $3};
+                Symbol symbol = {$4, $3, ID, is_curr_symbol_sequence};
                 insertInSymtab(symbol);
                 fprintf(yyout, "\ntype: %s\nid: %s\nis_sequence: %d\n", $3, $4, is_curr_symbol_sequence);
+                displaySymbol(symbol);
                 fprintf(yyout, "Number of symbols declared so far: %d\n", num_symbols);
                 
                 // check if sequence's id is present in the symbol table
