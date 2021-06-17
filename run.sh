@@ -1,5 +1,10 @@
 #!/bin/bash
 
+
+rm -r build
+rm -r bin
+mkdir build
+mkdir bin
 filename="${1}"
 lex src/basic.l && mv lex.yy.c build/
 yacc -d src/basic.y && mv y.tab.h include/ && mv y.tab.c build
