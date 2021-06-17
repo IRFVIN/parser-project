@@ -1,0 +1,36 @@
+foreach symbols: int, elem, elem
+ERROR (foreach): Symbol elem is not a sequence.
+foreach symbols: int, g, g
+ERROR (foreach): Symbol g is not a sequence.
+ERROR (array assignment): Symbol g is not a sequence.
+ERROR (array assignment): Symbol g is not a sequence.
+ERROR (array assignment): Symbol g is not a sequence.
+ERROR (factor -> ID): Symbol f is not declared!
+
+ERROR (assignment): Symbol f is not declared.
+
+ERROR (assignment): Symbol f is not declared.
+foreach symbols: int, int, int
+ERROR (foreach): Symbol int is not a sequence.
+foreach symbols: int, element, element
+ERROR (foreach): Symbol element is not a sequence.
+
+________________________________________________
+no.	name	type	token	is_sequence|
+________________________________________________
+#41	a	int	258	0
+#42	b	int	258	0
+#43	c	char	258	0
+#44	d	boolean	258	0
+#45	e	int	258	0
+#46	j	double	258	0
+#47	arr	int	258	1
+#48	x	int	258	1
+#49	hello	int	258	1
+#50	arr1	int	258	1
+#51	elem	int	258	0
+#52	g	int	258	0
+#53	int	int	258	0
+#54	element	int	258	0
+
+________________________________________________

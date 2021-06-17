@@ -7,3 +7,8 @@ lex.yy.c
 # Yacc's output
 y.tab.h
 y.tab.c
+
+bin
+build
+include/y.tab.h
+

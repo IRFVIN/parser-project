@@ -1,4 +1,11 @@
-lex basic.l 
-yacc -yd basic.y 
-gcc lex.yy.c y.tab.c symtab.c
-./a.out
+#!/bin/bash
+
+filename="${1}"
+lex src/basic.l && mv lex.yy.c build/
+yacc -d src/basic.y && mv y.tab.h include/ && mv y.tab.c build
+gcc -I"./include" build/lex.yy.c build/y.tab.c src/symtab.c -o bin/a.out
+./bin/a.out < "${filename}"
+
+mv output.txt "${filename}.txt"
+echo "Generated output containing symtab and type errors (if any) in ${filename}.txt"
+
