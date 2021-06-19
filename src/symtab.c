@@ -60,7 +60,7 @@ void writeSymbol(Symbol symbol, FILE *yyout) {
 
 void writeSymtab(FILE *yyout) {
   fprintf(yyout, "\n________________________________________________\n");
-  fprintf(yyout, "no.\tname\ttype\ttoken\tis_sequence|\n");
+  fprintf(yyout, "no.\tname\ttype\ttoken\tis_sequence\n");
   fprintf(yyout, "________________________________________________\n");
   for (int i = num_reserved_words; i < num_symbols; i++) {
     fprintf(yyout, "#%d\t", i);
