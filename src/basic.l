@@ -2,6 +2,21 @@
 #include <stdio.h>
 #include "y.tab.h"
 #include "symtab.h"
+
+/*
+ * Role of Lexical Analyzer:
+ * 1. ignore white spaces, single line comments, multi line comments
+ * 2. handle numbers (integers and floating point)
+      and return INTEGER or REAL to the parser.
+ * 3. handle reserved words, and, identifiers
+ * 4. return any other lexemes as is to the parser
+ *
+ * To handle reserved words, we create a symtab initialized with
+ * these reserved keywords (refer include/symtab.h and src/symtab.c).
+ * During the lexical analysis phase, if any reserved keyword is matched,
+ * then we return the corresponding token that is stored in the symbol table.
+ * Otherwise, we return the token ID, which stands for identifier.
+ */
 %}
 
 DIGIT       [0-9]

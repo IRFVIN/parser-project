@@ -7,6 +7,7 @@ Syntactically valid and type compatible foreach loop
 
 foreach symbols: int, g, d
 ERROR (foreach): Symbol d is not a sequence.
+
 ERROR (array assignment): Incompatible types x (int) and expr (double) 
 
 ERROR (assignment): Incompatible types d (boolean) and int

@@ -1,7 +1,6 @@
 %{
 // ordinary C declarations
 #include <stdio.h>
-
 #include "symtab.h"
 
 int is_curr_symbol_sequence;
@@ -15,6 +14,42 @@ int yylex();
 int yywrap() {
     return 1;
 }
+
+
+/*
+ * The role of the Syntax Analyzer is to try to derive the sequence
+ * of tokens returned by the lexical Analyzer using the listed rules
+ * of the grammar. If the sequence of tokens can't be derived, it prints
+ * an error. Otherwise, it prints "Syntactically valid program". It also
+ * checks for redeclaration errors.
+ * 
+ * Although not a part of syntax analysis, we have tried to implement basic
+ * type checking which is executed whenever the corresponding production is
+ * used to reduce the sentence.
+ *
+ * The core part of the project is to parse the Java foreach loop. For that,
+ * we need to define a basic grammar for a valid program.
+ *
+ * program -> block             A program is a block of code.
+ * block -> { decls stmts }     A block is enclosed in curly braces, which consists of declarations and statements.
+ * 
+ * More details about the decls nonterminal can be obtained by referring to the yacc grammar listed below.
+ * stmts -> stmts stmt | empty
+ * stmt -> ID assignment | ID [ INTEGER ] = expr ';'        A statement can be an assignment statement (basic type or sequence type) 
+ * stmt -> foreach stmt | { stmts }       A statement can be a foreach statement followed by a single statement or a set of statements enclosed in { }.
+ * 
+ * Now comes the core part of the project, the foreach loop.
+ * foreach -> FOR '(' BASIC ID ':' ID ')'
+ * A foreach loop consists of the reserved keyword 'for', opening parentheses, a basic type, an ID, a colon, another ID, followed by a closing parentheses
+ * and then one or more statements.
+ * A syntactically valid foreach loop should be able to get derived from this. If it does, then this production will be used to reduce the sequence of
+ * tokens received from the lexical analyzer. When it is used for production, the corresponding code written in the yacc file will get executed.
+ * This code:
+ * 1. checks if the first ID is a redeclaration, since Java disallows this.
+ * 2. checks if the second ID is indeed a sequence type, i.e. is iterable.
+ * 3. type checking: checks whether the type of the first ID is compatible with the underlying type of the sequence ID.
+ */
+
 %}
 
 %union {
@@ -104,14 +139,14 @@ stmt :
         int idx = getSymtabEntryIdx($1);
         //printf("HERE check %s\n", $1);
         if (idx == -1) {
-            fprintf(yyout, "ERROR (array assignment): Symbol %s is not declared.\n", $1);
+            fprintf(yyout, "\nERROR (array assignment): Symbol %s is not declared.\n", $1);
         } else {
             // check that ID is a sequence
             if (symbols[idx].is_sequence != 1) {
-                fprintf(yyout, "ERROR (array assignment): Symbol %s is not a sequence.\n", symbols[idx].name);
+                fprintf(yyout, "\nERROR (array assignment): Symbol %s is not a sequence.\n", symbols[idx].name);
             } else if (strcmp(symbols[idx].type, $6) != 0) {
                 // then check for type compatibility
-                fprintf(yyout, "ERROR (array assignment): Incompatible types %s (%s) and expr (%s) \n", symbols[idx].name, symbols[idx].type, $6);
+                fprintf(yyout, "\nERROR (array assignment): Incompatible types %s (%s) and expr (%s) \n", symbols[idx].name, symbols[idx].type, $6);
             } 
         }
     }
