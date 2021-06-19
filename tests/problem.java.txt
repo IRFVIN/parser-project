@@ -1,5 +1,4 @@
-foreach symbols: int, elem, elem
-ERROR (foreach): Symbol elem is not a sequence.
+foreach symbols: int, elem, arr
 
 ________________________________________________
 no.	name	type	token	is_sequence|

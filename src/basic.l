@@ -48,16 +48,17 @@ SEQUENCE_TYPE ArrayList
         int idx = getSymtabEntryIdx(yytext);
         if ( idx != -1 ) {
             // printf("Reserved keyword or already declared ID: %s\n", yytext);
+            yylval.stringValue = strdup(yytext);
             return symbols[idx].token;
         } else {
             // first occurence of identifier
             yylval.stringValue = strdup(yytext);
-            //printf("IDENTIFIER: %s\n", yytext);
+            //  printf("IDENTIFIER: %s %s\n", yytext, yylval.stringValue);
             return ID;
         }
     }
 .           {
-        //printf("other token: %s\n", yytext);
+        // printf("other token: %s\n", yytext);
         return yytext[0];
     }
 %%

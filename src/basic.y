@@ -126,7 +126,7 @@ foreach : FOR '(' BASIC ID ':' ID ')' {
                 fprintf(yyout, "ERROR (foreach): Redeclaration of symbol %s\n", $4);
             } else {
                 // symbol $4 is not a sequence, so is_sequence = 0
-                Symbol symbol = {$4, $3, ID, 0};
+                Symbol symbol = {strdup($4), strdup($3), ID, 0};
                 insertInSymtab(symbol);
                 
                 // check if sequence's id ($6) is present in the symbol table

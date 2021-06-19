@@ -2,13 +2,14 @@
 #define SYMTAB_H_
 
 #include "y.tab.h"
+#include <stdio.h>
 #include <string.h>
 
 typedef struct Symbol {
-    char *name;
-    char *type;
-    int token;
-    int is_sequence;
+  char *name;
+  char *type;
+  int token;
+  int is_sequence;
 } Symbol;
 
 extern const int num_reserved_words;
