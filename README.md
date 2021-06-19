@@ -28,8 +28,8 @@ chmod +x run.sh
 
 ### Coding
 
-- [ ] Lex file (`.l`), with well documented code
-- [ ] Yacc file (`.y`), with well documented code
+- [x] Lex file (`.l`), with well documented code
+- [x] Yacc file (`.y`), with well documented code
 
 ### Report
 
