@@ -18,20 +18,24 @@ for(type var : sequence){
 
 ## Running the Project
 
-Compiling instructions to be added.
+Running Instructions
+```bash
+chmod +x run.sh
+./run.sh tests/basic.java
+```
 
 ## To Do
 
 ### Coding
 
-- [ ] Lex file (`.l`), with well documented code
-- [ ] Yacc file (`.y`), with well documented code
+- [x] Lex file (`.l`), with well documented code
+- [x] Yacc file (`.y`), with well documented code
 
 ### Report
 
-- [ ] Syntax
-- [ ] Assumptions
-- [ ] Test Cases
+- [x] Syntax
+- [x] Assumptions
+- [x] Test Cases
 
 **Due Date**: 02 July, 2021.
 
