@@ -1,0 +1,334 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{courier} %% Sets font for listing as Courier.
+\usepackage{listings, xcolor}
+\usepackage{hyperref}
+\lstset{
+tabsize = 4, %% set tab space width
+showstringspaces = false, %% prevent space marking in strings, string is defined as the text that is generally printed directly to the console
+numbers = left, %% display line numbers on the left
+commentstyle = \color{gray}, %% set comment color
+keywordstyle = \color{blue}, %% set keyword color
+stringstyle = \color{red}, %% set string color
+rulecolor = \color{black}, %% set frame color to avoid being affected by text color
+basicstyle = \small \ttfamily , %% set listing font and size
+breaklines = true, %% enable line breaking
+numberstyle = \tiny,
+}
+
+\title{Java Parser Project}
+\author{Irfan Sheikh, Vineet Kumar}
+\date{June 2021}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+The objective of this project is to parse a Java For-Each loop (also referred to as the Enhanced For loop). We start with the Lexical Analysis, using Lex, which returns a sequence of tokens corresponding to lexemes in the input file. The parser then tries to derive this sequence of tokens from the rules of the grammar that we list in the yacc specification file. If successful, then the program is syntactically valid. Otherwise, there exist syntax errors in the input program.
+
+\section{The Basic Java Language}
+
+\begin{subsection}{Lexical Analysis}
+The tokens returned by the lexical analyzer are:
+
+\texttt{REAL, INTEGER} : floating point and integer numbers respectively.
+
+\texttt{BASIC, SEQUENCE\_TYPE} : basic types like \texttt{int, char}, etc, and sequence types like \texttt{ArrayList}.
+
+\texttt{ID} : identifiers
+\\ \\
+For more details regarding the regular expressions of these tokens, the Lex file \texttt{src/basic.l} can be referred, which contains comments that also explain the handling of reserved keywords. Any other characters are returned as is. As per the grammar, other characters that are part of valid syntax are \\
+\texttt{( ) ; : = + - * / \{ \} < > [ ] }
+
+\end{subsection}
+
+\begin{subsection}{Syntax Analysis}
+
+The grammar for a subset of the Java language is as follows.
+\\ \\
+\texttt{program $\rightarrow$ block}
+\\
+\texttt{block $\rightarrow$ \{ decls stmts \} }
+\\ \\
+\texttt{decls $\rightarrow$ decls decl $\vert$ $\epsilon$ }
+\\
+\texttt{decl $\rightarrow$ type ID assignment ;}
+\\ \\
+\texttt{type $\rightarrow$ sequence\_type $\vert$ array\_type $\vert$ basic}
+\\
+\texttt{basic $\rightarrow$ BASIC}
+\\
+\texttt{array\_type $\rightarrow$ BASIC [ ]}
+\\
+\texttt{sequence\_type $\rightarrow$ SEQUENCE\_TYPE < BASIC >}
+\\ \\
+\setlength{\parindent}{10ex}  \texttt{assignment $\rightarrow$ = expr}
+
+\texttt{$\vert$ = NEW BASIC [ INTEGER ]}
+
+\texttt{$\vert$ = NEW sequence\_type ( )}
+
+\texttt{$\vert$ $\epsilon$}
+\\ \\
+\texttt{stmts $\rightarrow$ stmts stmt $\vert$ $\epsilon$ }
+\\
+\texttt{stmt $\rightarrow$ ID assignment ; $\vert$ ID [ INTEGER ] = expr ;}
+
+\texttt{$\vert$ foreach stmt $\vert$ \{ stmts \}}
+\\ \\
+\texttt{foreach $\rightarrow$ FOR ( BASIC ID : ID ) }
+\\ \\
+\texttt{expr $\rightarrow$ expr + term}
+
+\texttt{$\vert$ expr - term}
+
+\texttt{$\vert$ term}
+\\ \\
+\texttt{term $\rightarrow$ term * factor}
+
+\texttt{$\vert$ term / factor}
+
+\texttt{$\vert$ term}
+\\ \\
+\texttt{factor $\rightarrow$ ( expr ) $\vert$ ID $\vert$ INTEGER $\vert$ REAL}
+\\ \\
+For more details regarding the grammar, the Yacc specification file \texttt{src/basic.y} can be referred, which contains comments explaining important parts of the grammar.
+
+\end{subsection}
+
+\section{Assumptions}
+
+We have assumed the following points:
+
+\begin{enumerate}
+    \item The grammar only allows programs that have statements followed by declarations, enclosed within curly braces.
+    \item The declarations have an optional assignment component.
+    \item The statements can only be either assignment statements, or a for-each construct, inside of which there can be one or more statements.
+    \item In a for-each loop, the underlying type of the sequence (or array) can be of only a primitive data type.
+    \item No Object Oriented Programming aspects of the Java Language have been taken into consideration.
+\end{enumerate}
+
+\section{Features}
+
+In addition to the lexical and syntax analysis, we have implemented the following features:
+
+\begin{enumerate}
+    \item Symbol table is being maintained. For more details, the files \\ \texttt{include/symtab.h} and \texttt{src/symtab.c} can be referred.
+    \item \label{decl} Using the symbol table, re-declaration of identifiers is being checked during the parsing process. Additionally, we also check whether or not an identifier being used in a statement has been previously declared.
+    \item Basic type checking is being performed whenever an identifier is being assigned something.
+    \item When parsing a for-each loop, in addition to (\ref{decl}), we check that the identifier being iterated is indeed a sequence, and, we check whether or not the underlying type of the sequence is the same as that of the looping variable.
+\end{enumerate}
+
+\section{Test Cases}
+
+All test cases reside in the \texttt{tests} directory. The bash script in the root directory of the project, \texttt{run.sh}, provides a simple way to run these tests. For example, \texttt{./run.sh tests/basic.java} will compile the lexical analyzer, the parser, and run the executable with the file \texttt{tests/basic.java}. The commands inside the bash script can also be executed manually, if one wishes to. The program will print whether or not the input program \texttt{program.java} is syntactically valid. If it is, then the file \texttt{program.java.txt} is created, which lists any re-declaration errors, type errors, and, the symbol table.
+
+\subsection{First Test Case : Valid For-Each Loop}
+
+\subsubsection{Program Code}
+The file \texttt{tests/foreach1.java} contains a simple program with a \textbf{valid} for-each loop.
+\begin{lstlisting}[language = Java , frame = trBL , firstnumber = last , escapeinside={(*@}{@*)}]
+{
+    int sum = 0;
+    int[] arr = new int[10];
+    
+    for (int elem : arr) {
+        sum = sum + elem;
+    }
+}
+
+\end{lstlisting}
+
+\subsubsection{Output}
+\begin{lstlisting}
+
+Syntactically valid program!
+Generated output containing symtab and type errors (if any) in tests/foreach1.java.txt
+
+Contents of tests/foreach1.java.txt:
+
+foreach symbols: int, elem, arr
+Syntactically valid and type compatible foreach loop
+
+________________________________________________
+no.	name	type	token	is_sequence
+________________________________________________
+#41	sum	int	258	0
+#42	arr	int	258	1
+#43	elem	int	258	0
+
+________________________________________________
+
+
+\end{lstlisting}
+
+\subsection{Second Test Case : Invalid For-Each Loop}
+
+\subsubsection{Program Code}
+The file \texttt{tests/foreach2.java} contains a simple program with an \textbf{invalid} for-each loop.
+\begin{lstlisting}[language = Java , frame = trBL , firstnumber = last , escapeinside={(*@}{@*)}]
+{
+    int sum = 0;
+    int[] arr = new int[10];
+    
+    for int elem : arr {
+        sum = sum + elem;
+    }
+}
+
+\end{lstlisting}
+
+\subsubsection{Output}
+\begin{lstlisting}
+
+error: syntax error
+error: Invalid Syntax!
+
+error: Invalid Syntax!
+...
+
+
+\end{lstlisting}
+
+\subsection{Third Test Case : Checking Type Errors}
+
+The file \texttt{tests/basic.java} contains a syntactically valid program, but with a lot of re-declaration and type errors, as noted in the comments.
+
+\subsubsection{Program Code}
+
+\begin{lstlisting}[language = Java , frame = trBL , firstnumber = last , escapeinside={(*@}{@*)}]
+{
+ 
+    
+
+    
+    int a; int b;
+    char c; boolean d;
+    
+    // should cause incompatible types 
+    int e = 10.0;
+    double j;
+    
+    char[] str = new char[100];
+    
+    ArrayList<int> arr = new ArrayList<int>();
+    int[] x = new int[10];
+    int[] hello = new int[100];
+    
+    ArrayList<int> arr1;    
+    arr1 = new ArrayList<int>();
+    
+    // valid foreach loop
+    for (int elem : arr) {
+        a = a * b + elem;
+    }
+    
+    // should cause d is not a sequence
+    for (int g : d) {
+        a = a + 1;
+    }
+    
+
+    x[0] = 12;
+    x[1] = 13;
+    x[2] = 16;
+    
+    // should cause incompatible types int and double
+    x[3] = 19.87;
+    
+    e = 10;
+    
+    // incompatible types boolean and int
+    d = 10 + 20 * 30;
+    
+    // should cause f is not declared
+    a = b + e + f;
+    
+    // should cause incompatible types double and int
+    j = 10;
+    
+    j = 10.23; // ok
+    
+    // should cause redeclaration of x
+    for (int x : arr) a = a + 1;
+    
+    // should cause "a" is not a sequence"
+    for (int element : a) {
+        a = a + 1;
+    }
+    
+    // should cause incompatible types int and char
+    for (int ele : str) {
+        ele = ele + 1;
+    }
+    
+}
+
+\end{lstlisting}
+
+\subsubsection{Output}
+
+\begin{lstlisting}
+
+Syntactically valid program!
+Generated output containing symtab and type errors (if any) in tests/basic.java.txt
+
+Contents of tests/basic.java.txt:
+
+ERROR (declaration) : Incompatible types e (int) and (double) 
+
+
+foreach symbols: int, elem, arr
+Syntactically valid and type compatible foreach loop
+
+
+foreach symbols: int, g, d
+ERROR (foreach): Symbol d is not a sequence.
+
+ERROR (array assignment): Incompatible types x (int) and expr (double) 
+
+ERROR (assignment): Incompatible types d (boolean) and int
+ERROR (factor -> ID): Symbol f is not declared!
+
+ERROR (assignment): Incompatible types j (double) and int
+
+
+foreach symbols: int, x, arr
+ERROR (foreach): Redeclaration of symbol x
+
+
+foreach symbols: int, element, a
+ERROR (foreach): Symbol a is not a sequence.
+
+
+foreach symbols: int, ele, str
+ERROR (foreach): Incompatible types: str (char) and  ele (int)
+
+________________________________________________
+no.	name	type	token	is_sequence
+________________________________________________
+#41	a	int	258	0
+#42	b	int	258	0
+#43	c	char	258	0
+#44	d	boolean	258	0
+#45	e	int	258	0
+#46	j	double	258	0
+#47	str	char	258	1
+#48	arr	int	258	1
+#49	x	int	258	1
+#50	hello	int	258	1
+#51	arr1	int	258	1
+#52	elem	int	258	0
+#53	g	int	258	0
+#54	element	int	258	0
+#55	ele	int	258	0
+
+________________________________________________
+
+\end{lstlisting}
+
+\end{document}
