@@ -33,9 +33,9 @@ chmod +x run.sh
 
 ### Report
 
-- [ ] Syntax
-- [ ] Assumptions
-- [ ] Test Cases
+- [x] Syntax
+- [x] Assumptions
+- [x] Test Cases
 
 **Due Date**: 02 July, 2021.
 
