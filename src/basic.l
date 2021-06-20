@@ -13,6 +13,8 @@
  *
  * To handle reserved words, we create a symtab initialized with
  * these reserved keywords (refer include/symtab.h and src/symtab.c).
+ * There are 41 reserved keywords. Therefore, identifiers in the program
+ * will be stored from index 41 in the symbol table.
  * During the lexical analysis phase, if any reserved keyword is matched,
  * then we return the corresponding token that is stored in the symbol table.
  * Otherwise, we return the token ID, which stands for identifier.

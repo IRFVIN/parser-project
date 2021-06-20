@@ -66,6 +66,7 @@ int yywrap() {
 
 program :
     block   {printf("Syntactically valid program!\n"); writeSymtab(yyout);}
+    | error { yyerror("Invalid Syntax!\n");}
     ;
 block :
     '{' decls stmts '}'

@@ -1,0 +1,13 @@
+
+
+foreach symbols: int, elem, arr
+Syntactically valid and type compatible foreach loop
+
+________________________________________________
+no.	name	type	token	is_sequence
+________________________________________________
+#41	sum	int	258	0
+#42	arr	int	258	1
+#43	elem	int	258	0
+
+________________________________________________
