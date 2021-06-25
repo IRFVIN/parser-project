@@ -1,10 +1,13 @@
 #!/bin/bash
 
+if [[ ${#} != 1 ]]; then
+    echo "Please enter the filename as an argument."
+    echo "Example usage: ./run.sh tests/basic.java"
+    exit 1
+fi
 
-rm -r build
-rm -r bin
-mkdir build
-mkdir bin
+mkdir -p build
+mkdir -p bin
 filename="${1}"
 lex src/basic.l && mv lex.yy.c build/
 yacc -d src/basic.y && mv y.tab.h include/ && mv y.tab.c build
